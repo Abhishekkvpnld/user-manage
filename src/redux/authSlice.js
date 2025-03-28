@@ -24,8 +24,11 @@ const authSlice = createSlice({
       );
     },
     deleteUser: (state, action) => {
-      state.allUsers = state.allUsers?.filter((user) => user.id !== action.payload);
+      state.allUsers = state.allUsers?.filter(
+        (user) => user.id !== action.payload
+      );
     },
+
   },
 });
 

@@ -10,6 +10,8 @@ import { deleteUser, setAllUsers } from "../redux/authSlice";
 import UserTable from "../components/UserTable";
 import { LuTable2 } from "react-icons/lu";
 import { FaRegAddressCard } from "react-icons/fa6";
+import { IoSearchSharp } from "react-icons/io5";
+import SortList from "../components/SortList";
 
 
 
@@ -20,7 +22,24 @@ const UserList = () => {
     const dispatch = useDispatch();
     const { allUsers } = useSelector((store) => store.auth);
     const [showTable, setShowTable] = useState("card");
+    const [search, setSearch] = useState("");
+    const [filteredUsers, setFilteredUsers] = useState([]);
+    const [sortOrder, setSortOrder] = useState("");
 
+    const handleSort = (order) => {
+        if (!order) return;
+
+        const sortedUsers = [...allUsers].sort((a, b) => {
+            return order === "asc"
+                ? a.first_name.localeCompare(b.first_name)
+                : b.first_name.localeCompare(a.first_name);
+        });
+
+        setFilteredUsers(sortedUsers);
+        setSortOrder(order);
+    };
+
+    //Fetch All Users
     const fetchAllUsers = async () => {
         try {
             const res = await axios.get(`${BASE_URL}/api/users?page=${currentPage}`);
@@ -33,7 +52,7 @@ const UserList = () => {
         }
     };
 
-
+    //Delete User
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this user?");
         if (!confirmDelete) return;
@@ -51,6 +70,21 @@ const UserList = () => {
         }
     };
 
+    // Search 
+    useEffect(() => {
+        if (!search.trim()) {
+            setFilteredUsers(allUsers || []);
+        } else {
+            setFilteredUsers(
+                allUsers?.filter(user =>
+                    user?.first_name?.toLowerCase().includes(search.toLowerCase()) || user?.last_name?.toLowerCase().includes(search.toLowerCase())
+                ) || []
+            );
+        }
+    }, [search, allUsers]);
+
+
+    // Display Size and table view
     useEffect(() => {
         const handleResize = () => {
             setShowTable(window.innerWidth <= 768 ? "card" : "table");
@@ -73,10 +107,23 @@ const UserList = () => {
                 All Registered Users
             </h1>
 
-            <div className={`hidden md:flex items-center w-[80%] justify-end mt-2 `}>
-                <div className="flex items-center justify-center gap-4 rounded-2xl px-5 bg-slate-200 p-3">
-                    <LuTable2 size={20} onClick={() => setShowTable("table")} className={`hover:scale-110 hover:font-bold hover:text-blue-600 transition-all ${showTable === "table" && "text-red-600"}`} title="Table View" />
-                    <FaRegAddressCard size={20} onClick={() => setShowTable("card")} className={`hover:scale-110 hover:font-bold hover:text-blue-600 transition-all ${showTable !== "table" && "text-red-600"} `} title="Card View" />
+            <div className={`flex items-center w-[80%] justify-between mt-4 `}>
+
+
+                <div className="flex items-center justify-center gap-4 rounded-2xl px-5 bg-slate-200 p-1">
+                    <input value={search} onChange={(e) => setSearch(e.target.value)} className="w-full p-1 h-full" placeholder="search user..." type="text" />
+                    <IoSearchSharp title="Search" size={20} className="hover:scale-110 hover:text-violet-700 transition-all" />
+                </div>
+
+
+                <div className="flex items-center gap-3">
+
+                    <SortList handleSort={handleSort} sortOrder={sortOrder} />
+
+                    <div className="hidden md:flex items-center justify-center gap-4 rounded-2xl px-5 bg-slate-200 p-3">
+                        <LuTable2 size={20} onClick={() => setShowTable("table")} className={`hover:scale-110 hover:font-bold hover:text-blue-600 transition-all ${showTable === "table" && "text-red-600"}`} title="Table View" />
+                        <FaRegAddressCard size={20} onClick={() => setShowTable("card")} className={`hover:scale-110 hover:font-bold hover:text-blue-600 transition-all ${showTable !== "table" && "text-red-600"} `} title="Card View" />
+                    </div>
                 </div>
             </div>
 
@@ -84,9 +131,9 @@ const UserList = () => {
                 showTable !== "card" ?
                     <UserTable users={allUsers} handleDelete={handleDelete} />
                     :
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-8 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-5 gap-3">
                         {
-                            allUsers?.map((user) => (
+                            filteredUsers?.map((user) => (
                                 <UserCard handleDelete={handleDelete} user={user} key={user?.id} />
                             ))
                         }
