@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { validationSchema } from "../utils/validation";
+import { LoginValidationSchema } from "../utils/validation";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import toast from "react-hot-toast";
@@ -39,7 +39,7 @@ const Login = () => {
 
                 <Formik
                     initialValues={{ email: "eve.holt@reqres.in", password: "cityslicka" }}
-                    validationSchema={validationSchema}
+                    validationSchema={LoginValidationSchema}
                     onSubmit={handleLogin}
                 >
                     {({ errors, touched, isSubmitting }) => (

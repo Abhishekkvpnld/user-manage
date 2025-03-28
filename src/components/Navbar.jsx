@@ -20,7 +20,7 @@ const Navbar = () => {
 
 
                     <Link to="/" className="text-2xl font-bold tracking-wide text-blue-400">
-                        Admin Panel
+                        Admin
                     </Link>
 
 
@@ -32,11 +32,12 @@ const Navbar = () => {
 
                     <div className="relative hidden md:block">
                         <button
+                            title="Profile"
                             onClick={() => setMenuOpen(!menuOpen)}
                             className="flex items-center space-x-2 focus:outline-none hover:scale-105 transition"
                         >
                             <img src="/profile.png" alt="Admin" className="h-10 w-10 rounded-full border-2 border-blue-400" />
-                            <span className="hidden md:inline">Admin</span>
+                            <span className="hidden md:inline font-semibold cursor-pointer">John Doe</span>
                         </button>
 
                         {menuOpen && (
