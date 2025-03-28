@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -11,7 +12,7 @@ const Navbar = () => {
         localStorage.removeItem("authToken");
         navigate("/login");
         toast.success("Logged Out Successfully ✅");
-    };
+    }; 
 
     return (
         <nav className="bg-gray-900/80 backdrop-blur-md text-white shadow-lg fixed top-0 left-0 w-full z-50">
@@ -66,9 +67,9 @@ const Navbar = () => {
                         <span>Admin</span>
                     </button>
                     {menuOpen && (
-                        <div className="mt-2 w-full bg-white text-black shadow-md rounded-lg py-2">
-                            <Link to="/" className="block px-4 py-2 font-semibold hover:bg-blue-100 transition">Profile</Link>
-                            <Link to="/" className="block px-4 py-2 font-semibold hover:bg-red-100 transition">Logout</Link>
+                        <div className="mt-2 w-full bg-white flex flex-col items-center justify-between text-black shadow-md rounded-lg py-2">
+                            <button className="block px-4 py-2 font-semibold hover:bg-blue-100 transition">Profile</button>
+                            <button  onClick={handleLogout} className="block px-4 py-2 text-center font-semibold hover:bg-red-600 hover:text-white transition-all">Logout</button>
                         </div>
                     )}
                 </div>
